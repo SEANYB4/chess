@@ -18,14 +18,14 @@ bool isValidPawnMove(int startX,
                         std::cout << "end X:" << endX << std::endl;
                         std::cout << "end Y:" << endY << std::endl;
 
-                        int direction = (piece < 6 || piece == 12) ? 1 : -1;
+                        int direction = (piece < 6 || piece == 12) ? -1 : 1;
                         if (startX == endX) {
                             // Move straight
-                            if (abs(endY - startY) == direction) {
+                            if (endY - startY == direction) {
                                 return board[endY][endX] == 13; // Ensure target square empty
                             } else if (endY - startY == 2 * direction && !hasMoved ) { // maybe extra condition
                                 // Check both squares are empty for initial two-square move
-                                return board[startY + direction][startX] == 13 && board[endY][endX] == 13;
+                                return board[startY - direction][startX] == 13 && board[endY][endX] == 13;
                             }
                         } else if (abs(startX - endX) == 1 && endY - startY == direction) {
                             // Capture diagonally

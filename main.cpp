@@ -13,6 +13,10 @@ const int SQUARE_SIZE = WINDOW_WIDTH / BOARD_SIZE;
 bool isWhiteTurn = true;
 
 
+sf::Texture emptyTexture;
+sf::Sprite emptySprite;
+
+
 std::vector<sf::Texture> textures(13);
 sf::Sprite pieces[BOARD_SIZE][BOARD_SIZE];
 
@@ -24,20 +28,20 @@ int main() {
 
     try {
     // Load textures for white pieces
-    textures[12].loadFromFile("WP.png"); // White Pawn
-    textures[1].loadFromFile("WKn.png"); // WHite Knight
-    textures[2].loadFromFile("WB.png"); // White Bishop
-    textures[3].loadFromFile("WR.png"); // White Rook
-    textures[4].loadFromFile("WQ.png"); // White Queen
-    textures[5].loadFromFile("WK.png"); // White King
+    textures[12].loadFromFile("./Images/WP.png"); // White Pawn
+    textures[1].loadFromFile("./Images/WKn.png"); // WHite Knight
+    textures[2].loadFromFile("./Images/WB.png"); // White Bishop
+    textures[3].loadFromFile("./Images/WR.png"); // White Rook
+    textures[4].loadFromFile("./Images/WQ.png"); // White Queen
+    textures[5].loadFromFile("./Images/WK.png"); // White King
 
     // Load textures for Black pieces
-    textures[6].loadFromFile("BP.png"); // Black Pawn
-    textures[7].loadFromFile("BKn.png"); // Black Knight
-    textures[8].loadFromFile("BB.png"); // Black Bishop
-    textures[9].loadFromFile("BR.png"); // Black Rook
-    textures[10].loadFromFile("BQ.png"); // Black Queen
-    textures[11].loadFromFile("BK.png"); // Black King
+    textures[6].loadFromFile("./Images/BP.png"); // Black Pawn
+    textures[7].loadFromFile("./Images/BKn.png"); // Black Knight
+    textures[8].loadFromFile("./Images/BB.png"); // Black Bishop
+    textures[9].loadFromFile("./Images/BR.png"); // Black Rook
+    textures[10].loadFromFile("./Images/BQ.png"); // Black Queen
+    textures[11].loadFromFile("./Images/BK.png"); // Black King
 
     
     } catch (const std::exception& e) {
@@ -58,7 +62,6 @@ int main() {
     };
 
 
-
     // Assign textures to sprites based on board setup
 
     for (int x = 0; x < BOARD_SIZE; x++) {
@@ -73,16 +76,11 @@ int main() {
     }
 
 
-
     // Create the main window
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Chess Game");
 
-
-
     // Main loop that continues until we close the window
     while (window.isOpen()) {
-
-
 
 
         // Event Handling
@@ -127,21 +125,81 @@ int main() {
                                                                       (x/SQUARE_SIZE),
                                                                       (y/SQUARE_SIZE),
                                                                       board[selectedSquare.y][selectedSquare.x],
-                                                                      false,
+                                                                      true,
                                                                       board
                                                                       );
                                         std::cout << "Valid: " << isValidMove << std::endl;
                                         break;
 
 
+                                    case 1: // White Knight
+                                        isValidMove = false;
+                                        std::cout << "Valid: " << isValidMove << std::endl;
+                                        break;
+
+                                    case 2: // White Bishop
+                                        isValidMove = false;
+                                        std::cout << "Valid: " << isValidMove << std::endl;
+                                        break;
+
+                                    case 3: // White Rook
+                                        isValidMove = false;
+                                        std::cout << "Valid: " << isValidMove << std::endl;
+                                        break;
+
+                                    case 4: // White Queen
+                                        isValidMove = false;
+                                        std::cout << "Valid: " << isValidMove << std::endl;
+                                        break;
+
+
+                                    case 5: // White King
+                                        isValidMove = false;
+                                        std::cout << "Valid: " << isValidMove << std::endl;
+                                        break;
+
                                     case 6: // Black Pawn
-                                        isValidMove = true;
+                                        isValidMove = isValidPawnMove(selectedSquare.x,
+                                                                      selectedSquare.y,
+                                                                      (x/SQUARE_SIZE),
+                                                                      (y/SQUARE_SIZE),
+                                                                      board[selectedSquare.y][selectedSquare.x],
+                                                                      true,
+                                                                      board
+                                                                      );
+                                        std::cout << "Valid: " << isValidMove << std::endl;
+                                        break;
+
+                                    case 7: // Black Knight
+                                        isValidMove = false;
+                                        std::cout << "Valid: " << isValidMove << std::endl;
+                                        break;
+
+                                    case 8: // Black Bishop
+                                        isValidMove = false;
+                                        std::cout << "Valid: " << isValidMove << std::endl;
+                                        break;
+
+                                    case 9: // Black Rook
+                                        isValidMove = false;
+                                        std::cout << "Valid: " << isValidMove << std::endl;
+                                        break;
+
+                                    case 10: // Black Queen
+                                        isValidMove = false;
+                                        std::cout << "Valid: " << isValidMove << std::endl;
+                                        break;
+
+                                    case 11: // Black King
+                                        isValidMove = false;
+                                        std::cout << "Valid: " << isValidMove << std::endl;
                                         break;
 
 
 
                                     default:
                                         isValidMove = true;
+                                        std::cout << "deafult" << std::endl;
                                         break;
 
 
@@ -149,6 +207,8 @@ int main() {
 
 
                                 if (isValidMove) {
+
+                                    // MOVE THE PIECE
 
                                     int position = board[y/SQUARE_SIZE][x/SQUARE_SIZE];
                                     int temp = board[selectedSquare.y][selectedSquare.x];
@@ -160,7 +220,13 @@ int main() {
                                     y = y/SQUARE_SIZE;
 
                                     pieces[selectedSquare.y][selectedSquare.x].setPosition(x*SQUARE_SIZE + SQUARE_SIZE/2, y*SQUARE_SIZE + SQUARE_SIZE/2);
+                                    sf::Sprite tempPiece = pieces[selectedSquare.y][selectedSquare.x];
+                                    
+                                    pieces[selectedSquare.y][selectedSquare.x] = emptySprite;
+                                    pieces[y][x] = tempPiece;
 
+
+                                    // Deselect square
                                     selectedSquare = sf::Vector2i(-1, -1);
 
 
