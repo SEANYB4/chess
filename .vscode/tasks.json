@@ -9,6 +9,7 @@
                 "-o",
                 "${workspaceFolder}/chess",
                 "${workspaceFolder}/main.cpp",
+                "${workspaceFolder}/pawnValidate.cpp",
                 "-lsfml-graphics",
                 "-lsfml-window",
                 "-lsfml-system"

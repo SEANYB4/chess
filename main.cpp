@@ -1,12 +1,16 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
+#include "pawnValidate.h"
 
 
 const int WINDOW_WIDTH = 400;
 const int WINDOW_HEIGHT = 400;
 const int BOARD_SIZE = 8; // Chessboard is 8x8
 const int SQUARE_SIZE = WINDOW_WIDTH / BOARD_SIZE;
+
+
+bool isWhiteTurn = true;
 
 
 std::vector<sf::Texture> textures(13);
@@ -99,22 +103,80 @@ int main() {
 
                     int x = event.mouseButton.x;
                     int y = event.mouseButton.y;
-                    std::cout << x << std::endl;
-                    std::cout << y << std::endl;
+                    
 
                     if (selectedSquare.x != -1 && selectedSquare.y != -1) {
 
-                        int position = board[y/SQUARE_SIZE][x/SQUARE_SIZE];
-                        int temp = board[selectedSquare.y][selectedSquare.x];
 
-                        board[selectedSquare.y][selectedSquare.x] = 13;
-                        board[y/SQUARE_SIZE][x/SQUARE_SIZE] = temp;
+                        bool isValidMove;
+                        // Check if piece belongs to current turn's side
+                        if (
+                            (isWhiteTurn && (board[selectedSquare.y][selectedSquare.x] <= 5 || 
+                            board[selectedSquare.y][selectedSquare.x] == 12)) ||
+                            (!isWhiteTurn && board[selectedSquare.y][selectedSquare.x] >= 6 &&
+                            board[selectedSquare.y][selectedSquare.x] <= 11)
+                            ) {
 
-                        pieces[selectedSquare.y][selectedSquare.x].setPosition(x, y);
 
-                        selectedSquare = sf::Vector2i(-1, -1);
-                        
-                        
+                                // CHECK FOR VALID MOVE
+                                switch(board[selectedSquare.y][selectedSquare.x]) {
+                                    
+                                    case 12: // White Pawn
+                                        isValidMove = isValidPawnMove(selectedSquare.x,
+                                                                      selectedSquare.y,
+                                                                      (x/SQUARE_SIZE),
+                                                                      (y/SQUARE_SIZE),
+                                                                      board[selectedSquare.y][selectedSquare.x],
+                                                                      false,
+                                                                      board
+                                                                      );
+                                        std::cout << "Valid: " << isValidMove << std::endl;
+                                        break;
+
+
+                                    case 6: // Black Pawn
+                                        isValidMove = true;
+                                        break;
+
+
+
+                                    default:
+                                        isValidMove = true;
+                                        break;
+
+
+                                }
+
+
+                                if (isValidMove) {
+
+                                    int position = board[y/SQUARE_SIZE][x/SQUARE_SIZE];
+                                    int temp = board[selectedSquare.y][selectedSquare.x];
+
+                                    board[selectedSquare.y][selectedSquare.x] = 13;
+                                    board[y/SQUARE_SIZE][x/SQUARE_SIZE] = temp;
+
+                                    x = x/SQUARE_SIZE;
+                                    y = y/SQUARE_SIZE;
+
+                                    pieces[selectedSquare.y][selectedSquare.x].setPosition(x*SQUARE_SIZE + SQUARE_SIZE/2, y*SQUARE_SIZE + SQUARE_SIZE/2);
+
+                                    selectedSquare = sf::Vector2i(-1, -1);
+
+
+                                    // Toggle the turn
+                                    isWhiteTurn = !isWhiteTurn;
+
+                                } else {
+                                     selectedSquare = sf::Vector2i(-1, -1);
+                                }                             
+
+
+                            } else {
+
+                                    selectedSquare = sf::Vector2i(-1, -1);
+                                    // Deselect if the same square is clicked again
+                                }   
 
                     } else {
 
